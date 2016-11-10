@@ -84,9 +84,32 @@
 
         /* TODO » fonction de chargement et d'affichage du fichier users.csv
          */
-        function loadCSV() {
+         function loadCSV() {
+             requete = new XMLHttpRequest();
 
-        }
+             requete.onload = onDataCSV;
+             requete.onerror = onError;
+             requete.open('get', 'texte.csv', true);
+             requete.send();
+         }
+         function onDataCSV(e) {
+             console.log('onDataCSV', this.responseText); // this.responseText n'est pas défini
+             var infos = parseCSVData(e.target.responseText);
+             var infoList = document.createElement('ul');
+             infos.forEach(function (info) {
+                 var infoLi = document.createElement('li');
+                 infoLi.innerText = info[0] + ' ' + info[1] + ' ' + info[2];
+                 infoList.appendChild(infoLi);
+             });
+             document.getElementById('bloc-csv').appendChild(infoList);
+         }
+         function parseCSVData(text) {
+             var infos = text.split('\n');
+             return infos.map(function (infoText) {
+                 return infoText.split(',');
+             });
+         }
+
 
         function onError(e) {
             alert("Erreur : ", e);
